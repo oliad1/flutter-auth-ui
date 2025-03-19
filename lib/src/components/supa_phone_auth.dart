@@ -42,6 +42,8 @@ class _SupaPhoneAuthState extends State<SupaPhoneAuth> {
   bool isSigningIn = true;
   bool updatePassword = false;
 
+  List<bool> _isObscured = [true, true, true, true, true];
+
   var maskFormatter = new MaskTextInputFormatter(
     mask: '+# (###) ###-####', 
     filter: { "#": RegExp(r'[0-9]') },
@@ -101,11 +103,19 @@ class _SupaPhoneAuthState extends State<SupaPhoneAuth> {
                 validator:Validators.compose([
                     Validators.required('Password is required'),
                     Validators.patternString(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$', 'Password must have:\n\t•\t1 Uppercase\n\t•\t1 Lowercase\n\t•\t1 Number\n\t•\t8 Characters Long')]),
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   // prefixIcon: Icon(Icons.key_rounded),
                   label: Text('Password'),
+                  suffixIcon: IconButton(
+                    icon: _isObscured[0] ? const Icon(Icons.visibility) : const Icon(Icons.visibility_off),
+                    onPressed: () { 
+                      setState((){
+                        _isObscured[0] = !_isObscured[0];
+                      });
+                    },
+                  )
                 ),
-                obscureText: true,
+                obscureText: _isObscured[0],
                 controller: _password,
               ),
 
@@ -123,10 +133,18 @@ class _SupaPhoneAuthState extends State<SupaPhoneAuth> {
                     return null;
                   }            
                 },
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   label: Text('Confirm Password'),
+                  suffixIcon: IconButton(
+                    icon: _isObscured[1] ? const Icon(Icons.visibility) : const Icon(Icons.visibility_off),
+                    onPressed: () { 
+                      setState((){
+                        _isObscured[1] = !_isObscured[1];
+                      });
+                    },
+                  )
                 ),
-                obscureText: true,
+                obscureText: _isObscured[1],
                 controller: _confirmPass,
               ),
             ],
@@ -139,10 +157,18 @@ class _SupaPhoneAuthState extends State<SupaPhoneAuth> {
                   }
                   return null;
                 },
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   label: Text('Password'),
+                  suffixIcon: IconButton(
+                    icon: _isObscured[2] ? const Icon(Icons.visibility) : const Icon(Icons.visibility_off),
+                    onPressed: () { 
+                      setState((){
+                        _isObscured[2] = !_isObscured[2];
+                      });
+                    },
+                  )
                 ),
-                obscureText: true,
+                obscureText: _isObscured[2],
                 controller: _password,
               ),
             ],
@@ -412,11 +438,19 @@ class _SupaPhoneAuthState extends State<SupaPhoneAuth> {
                   validator:Validators.compose([
                       Validators.required('Password is required'),
                       Validators.patternString(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$', 'Password must have:\n\t•\t1 Uppercase\n\t•\t1 Lowercase\n\t•\t1 Number\n\t•\t8 Characters Long')]),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     // prefixIcon: Icon(Icons.key_rounded),
                     label: Text('New Password'),
+                    suffixIcon: IconButton(
+                      icon: _isObscured[3] ? const Icon(Icons.visibility) : const Icon(Icons.visibility_off),
+                      onPressed: () { 
+                        setState((){
+                          _isObscured[3] = !_isObscured[3];
+                        });
+                      },
+                    ),
                   ),
-                  obscureText: true,
+                  obscureText: _isObscured[3],
                   controller: _password,
                 ),
 
@@ -434,10 +468,18 @@ class _SupaPhoneAuthState extends State<SupaPhoneAuth> {
                       return null;
                     }            
                   },
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     label: Text('Confirm New Password'),
+                    suffixIcon: IconButton(
+                      icon: _isObscured[4] ? const Icon(Icons.visibility) : const Icon(Icons.visibility_off),
+                      onPressed: () { 
+                        setState((){
+                          _isObscured[4] = !_isObscured[4];
+                        });
+                      },
+                    )
                   ),
-                  obscureText: true,
+                  obscureText: _isObscured[4],
                   controller: _confirmPass,
                 ),
                 spacer(16),
