@@ -91,7 +91,7 @@ class SupaEmailAuth extends StatefulWidget {
   final void Function(bool isSigningIn)? onToggleSignIn;
 
   /// Callback for toggling between sign-in/ sign-up and password recovery
-  final void Function(bool isRecoveringPassword)? onToggleRecoverPassword;
+  final void Function(bool _forgotPassword)? onToggleRecoverPassword;
 
   /// Set of additional fields to the signup form that will become
   /// part of the user_metadata
@@ -137,24 +137,21 @@ class _SupaEmailAuthState extends State<SupaEmailAuth> {
 
   bool _isLoading = false;
 
-  List<bool> _isObscured = [true, true, true, true, true];
+  final List<bool> _isObscured = [true, true, true, true, true];
 
   bool isVerifying = false;
 
   /// The user has pressed forgot password button
-  bool _isRecoveringPassword = false;
+  bool _forgotPassword= false;
 
   /// Whether the user is signing in or signing up
   bool _isSigningIn = true;
 
-  var maskFormatter = new MaskTextInputFormatter(
+  var maskFormatter = MaskTextInputFormatter(
     mask: '######',
     filter: { "#": RegExp(r'[0-9]') },
     type: MaskAutoCompletionType.eager
   );
-
-  /// Focus node for email field
-  final FocusNode _emailFocusNode = FocusNode();
 
   @override
   void initState() {

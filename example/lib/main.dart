@@ -18,9 +18,9 @@ void main() async {
      url: 'https://yoursupabaseurl.supabase.co',
     anonKey: 'your_anon_key',
   );
-  runApp(DevicePreview(
-    builder: (context) => const MyApp()
-    ));
+  runApp(
+    const MyApp()
+  );
 }
 
 class MyApp extends StatelessWidget {

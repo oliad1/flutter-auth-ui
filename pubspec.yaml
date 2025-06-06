@@ -11,13 +11,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  wc_form_validators: ^1.0.0
-  mask_text_input_formatter: ^2.4.0
   supabase_flutter: ^2.6.0
   email_validator: ^2.0.1
   font_awesome_flutter: ^10.6.0
-  google_sign_in: ^6.2.1
-  sign_in_with_apple: ^6.1.0
   device_preview: ^1.1.0
   wc_form_validators: ^1.0.0
   mask_text_input_formatter: ^2.4.0

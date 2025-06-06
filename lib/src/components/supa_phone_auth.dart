@@ -18,7 +18,6 @@ class SupaPhoneAuth extends StatefulWidget {
 
   const SupaPhoneAuth({
     super.key,
-    required this.authAction,
     required this.onSuccess,
     this.onError,
     this.localization = const SupaPhoneAuthLocalization(),
@@ -47,15 +46,15 @@ class _SupaPhoneAuthState extends State<SupaPhoneAuth> {
   bool isSigningIn = true;
   bool updatePassword = false;
 
-  List<bool> _isObscured = [true, true, true, true, true];
+  final List<bool> _isObscured = [true, true, true, true, true];
 
-  var maskFormatter = new MaskTextInputFormatter(
+  var maskFormatter = MaskTextInputFormatter(
     mask: '+# (###) ###-####', 
     filter: { "#": RegExp(r'[0-9]') },
     type: MaskAutoCompletionType.lazy
   );
 
-  var maskFormatter2 = new MaskTextInputFormatter(
+  var maskFormatter2 = MaskTextInputFormatter(
             mask: '######',
             filter: { "#": RegExp(r'[0-9]') },
             type: MaskAutoCompletionType.eager
@@ -110,7 +109,7 @@ class _SupaPhoneAuthState extends State<SupaPhoneAuth> {
                     Validators.patternString(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$', 'Password must have:\n\t•\t1 Uppercase\n\t•\t1 Lowercase\n\t•\t1 Number\n\t•\t8 Characters Long')]),
                 decoration: InputDecoration(
                   // prefixIcon: Icon(Icons.key_rounded),
-                  label: Text('Password'),
+                  label: const Text('Password'),
                   suffixIcon: IconButton(
                     icon: _isObscured[0] ? const Icon(Icons.visibility) : const Icon(Icons.visibility_off),
                     onPressed: () { 
@@ -139,7 +138,7 @@ class _SupaPhoneAuthState extends State<SupaPhoneAuth> {
                   }            
                 },
                 decoration: InputDecoration(
-                  label: Text('Confirm Password'),
+                  label: const Text('Confirm Password'),
                   suffixIcon: IconButton(
                     icon: _isObscured[1] ? const Icon(Icons.visibility) : const Icon(Icons.visibility_off),
                     onPressed: () { 
@@ -163,7 +162,7 @@ class _SupaPhoneAuthState extends State<SupaPhoneAuth> {
                   return null;
                 },
                 decoration: InputDecoration(
-                  label: Text('Password'),
+                  label: const Text('Password'), //TODO: Use a const file
                   suffixIcon: IconButton(
                     icon: _isObscured[2] ? const Icon(Icons.visibility) : const Icon(Icons.visibility_off),
                     onPressed: () { 
@@ -191,27 +190,28 @@ class _SupaPhoneAuthState extends State<SupaPhoneAuth> {
                 try {
                   if (isSigningIn) {
                     final response = await supabase.auth.signInWithPassword(
-                      phone: '+'+maskFormatter.getUnmaskedText(),
+                      phone: '+${maskFormatter.getUnmaskedText()}',
                       password: _password.text,
                     );
                     widget.onSuccess(response);
                   } else {
                     final response = await supabase.auth.signUp(
-                          phone: '+'+maskFormatter.getUnmaskedText(), 
-                          password: _password.text,
-                          data: {
-                            "first_name": "",
-                            "last_name": "",
-                          }
-                        );
+                      phone: '+${maskFormatter.getUnmaskedText()}', 
+                      password: _password.text,
+                      data: {
+                        "first_name": "",
+                        "last_name": "",
+                      }
+                    );
+                    debugPrint("AUTH RES: $response");
                     if (!mounted) return;
                     // widget.onSuccess(response);
                     setState(() {
                       isVerifying = true;
                     });
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: const Text("Check text for SMS verification."),
+                      const SnackBar(
+                        content: Text("Check text for SMS verification."),
                       )
                     );
                   }
@@ -309,11 +309,11 @@ class _SupaPhoneAuthState extends State<SupaPhoneAuth> {
               }
               try {
                 final response = await supabase.auth.signInWithOtp(
-                  phone: '+'+maskFormatter.getUnmaskedText(),
+                  phone: '+${maskFormatter.getUnmaskedText()}',
                 );
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text("Check text for SMS One-Time-Password (OTP)."),
+                  const SnackBar(
+                    content: Text("Check text for SMS One-Time-Password (OTP)."),
                   )
                 );
                 setState(() {
@@ -376,7 +376,7 @@ class _SupaPhoneAuthState extends State<SupaPhoneAuth> {
                     }
                     try {
                       final response = await supabase.auth.verifyOTP(
-                        phone: '+'+maskFormatter.getUnmaskedText(),
+                        phone: '+${maskFormatter.getUnmaskedText()}',
                         token: _code.text,
                         type: OtpType.sms,
                       );
@@ -474,7 +474,7 @@ class _SupaPhoneAuthState extends State<SupaPhoneAuth> {
                     }            
                   },
                   decoration: InputDecoration(
-                    label: Text('Confirm New Password'),
+                    label: const Text('Confirm New Password'),
                     suffixIcon: IconButton(
                       icon: _isObscured[4] ? const Icon(Icons.visibility) : const Icon(Icons.visibility_off),
                       onPressed: () { 
@@ -505,8 +505,8 @@ class _SupaPhoneAuthState extends State<SupaPhoneAuth> {
                         )
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: const Text("Password Reset!"),
+                        const SnackBar(
+                          content: Text("Password Reset!"),
                           backgroundColor: Colors.green,
                         )
                       );
