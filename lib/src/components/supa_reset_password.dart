@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_auth_ui/src/localizations/supa_reset_password_localization.dart';
 import 'package:supabase_auth_ui/src/utils/constants.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// UI component to create password reset form
 class SupaResetPassword extends StatefulWidget {
@@ -13,12 +14,16 @@ class SupaResetPassword extends StatefulWidget {
   /// Method to be called when the auth action threw an excepction
   final void Function(Object error)? onError;
 
+  /// Localization for the form
+  final SupaResetPasswordLocalization localization;
+
   const SupaResetPassword({
-    Key? key,
+    super.key,
     this.accessToken,
     required this.onSuccess,
     this.onError,
-  }) : super(key: key);
+    this.localization = const SupaResetPasswordLocalization(),
+  });
 
   @override
   State<SupaResetPassword> createState() => _SupaResetPasswordState();
@@ -36,29 +41,31 @@ class _SupaResetPasswordState extends State<SupaResetPassword> {
 
   @override
   Widget build(BuildContext context) {
+    final localization = widget.localization;
     return Form(
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TextFormField(
+            autofillHints: const [AutofillHints.newPassword],
             validator: (value) {
               if (value == null || value.isEmpty || value.length < 6) {
-                return 'Please enter a password that is at least 6 characters long';
+                return localization.passwordLengthError;
               }
               return null;
             },
-            decoration: const InputDecoration(
-              prefixIcon: Icon(Icons.lock),
-              label: Text('Enter your password'),
+            decoration: InputDecoration(
+              prefixIcon: const Icon(Icons.lock),
+              label: Text(localization.enterPassword),
             ),
             controller: _password,
           ),
           spacer(16),
           ElevatedButton(
-            child: const Text(
-              'Update Password',
-              style: TextStyle(fontWeight: FontWeight.bold),
+            child: Text(
+              localization.updatePassword,
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             onPressed: () async {
               if (!_formKey.currentState!.validate()) {
@@ -71,16 +78,19 @@ class _SupaResetPasswordState extends State<SupaResetPassword> {
                   ),
                 );
                 widget.onSuccess.call(response);
+                // FIX use_build_context_synchronously
+                if (!context.mounted) return;
+                context.showSnackBar(localization.passwordResetSent);
               } on AuthException catch (error) {
-                if (widget.onError == null) {
+                if (widget.onError == null && context.mounted) {
                   context.showErrorSnackBar(error.message);
                 } else {
                   widget.onError?.call(error);
                 }
               } catch (error) {
-                if (widget.onError == null) {
+                if (widget.onError == null && context.mounted) {
                   context.showErrorSnackBar(
-                      'Unexpected error has occurred: $error');
+                      '${localization.passwordLengthError}: $error');
                 } else {
                   widget.onError?.call(error);
                 }

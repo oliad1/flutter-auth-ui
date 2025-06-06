@@ -1,3 +1,56 @@
+## 0.5.0
+
+- feat: Allow password recovery email to be redirected to other URL [#98](https://github.com/supabase-community/flutter-auth-ui/pull/98)
+- feat: Add callback for internal state of `SupaEmailAuth` [#99](https://github.com/supabase-community/flutter-auth-ui/pull/99)
+- feat!: Upgrade anonymous users to regular users automatically [#100](https://github.com/supabase-community/flutter-auth-ui/pull/100)
+- feat!: Allow the OAuth provider labels to be overridden on `SupaSocialsAuth` [#101](https://github.com/supabase-community/flutter-auth-ui/pull/101)
+
+## 0.4.4
+
+- feat: Update minimum supabase_flutter version to v2.3.4
+- fix: Add redirectTo for email password reset [#83](https://github.com/supabase-community/flutter-auth-ui/pull/83)
+- feat: Add TextInputAction to phone and email sign in [#82](https://github.com/supabase-community/flutter-auth-ui/pull/82)
+- fix: Fix autofill not opening when tapping on email field in SupaEmailAuth [#80](https://github.com/supabase-community/flutter-auth-ui/pull/80)
+
+## 0.4.3
+
+- feat: Add localization / text customization support for all components.
+  ```dart
+  // Use the `localization` parameter to customize the text of the UI components.
+  SupaEmailAuth(
+    localization: const SupaEmailAuthLocalization(
+      enterEmail: 'What\'s your email?',
+      enterPassword: 'Enter your password',
+    ),
+    onSignInComplete: _onSignInComplete,
+    onSignUpComplete: _onSignUpComplete,
+  ),
+  ```
+
+## 0.4.2
+
+- feat: Add `nativeGoogleAuthConfig` and `enableNativeAppleAuth` parameter to `SupaSocialsAuth` to support native Google and Apple auth.
+
+## 0.4.1
+
+- feat: Add `extraMetadata` parameter to `SupaEmailAuth` to add headless signup user metadata.
+
+## 0.4.0+1
+
+- chore: Minor updates to readme.md
+
+## 0.4.0
+
+- BREAKING: Rename `twitter` to `x` for social provider and update branding.
+- BREAKING: Remove `SocialProviders` enum in favor of `OAuthProvider` to align the public API with supabase_flutter.
+- feat: Add missing social providers.
+- chore: Update screenshot on readme.md.
+- chore: Add screenshot for pub.dev.
+
+## 0.3.0
+
+- BREAKING: Update `supabase_flutter` to v2.0.1
+
 ## 0.2.1
 
 - feat: Make `SupaSocialsAuth` success SnackBar optional [#54](https://github.com/supabase-community/flutter-auth-ui/pull/54)

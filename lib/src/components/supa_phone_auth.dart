@@ -13,11 +13,16 @@ class SupaPhoneAuth extends StatefulWidget {
   /// Method to be called when the auth action threw an excepction
   final void Function(Object error)? onError;
 
+  /// Localization for the form
+  final SupaPhoneAuthLocalization localization;
+
   const SupaPhoneAuth({
-    Key? key,
+    super.key,
+    required this.authAction,
     required this.onSuccess,
     this.onError,
-  }) : super(key: key);
+    this.localization = const SupaPhoneAuthLocalization(),
+  });
 
   @override
   State<SupaPhoneAuth> createState() => _SupaPhoneAuthState();

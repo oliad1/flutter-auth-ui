@@ -1,5 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_auth_ui/src/localizations/supa_email_auth_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:supabase_auth_ui/src/utils/constants.dart';
@@ -58,11 +59,17 @@ class MetaDataField {
 ///   },
 /// ),
 /// ```
-/// /// {@endtemplate}
+/// {@endtemplate}
 class SupaEmailAuth extends StatefulWidget {
   /// The URL to redirect the user to when clicking on the link on the
   /// confirmation link after signing up.
   final String? redirectTo;
+
+  /// The URL to redirect the user to when clicking on the link on the
+  /// password recovery link.
+  ///
+  /// If unspecified, the [redirectTo] value will be used.
+  final String? resetPasswordRedirectTo;
 
   /// Callback for the user to complete a sign in.
   final void Function(AuthResponse response) onSignInComplete;
@@ -75,23 +82,42 @@ class SupaEmailAuth extends StatefulWidget {
   /// Callback for sending the password reset email
   final void Function()? onPasswordResetEmailSent;
 
-  /// Callback for when the auth action threw an excepction
+  /// Callback for when the auth action threw an exception
   ///
   /// If set to `null`, a snack bar with error color will show up.
   final void Function(Object error)? onError;
 
+  /// Callback for toggling between sign in and sign up
+  final void Function(bool isSigningIn)? onToggleSignIn;
+
+  /// Callback for toggling between sign-in/ sign-up and password recovery
+  final void Function(bool isRecoveringPassword)? onToggleRecoverPassword;
+
+  /// Set of additional fields to the signup form that will become
+  /// part of the user_metadata
   final List<MetaDataField>? metadataFields;
+
+  /// Additional properties for user_metadata on signup
+  final Map<String, dynamic>? extraMetadata;
+
+  /// Localization for the form
+  final SupaEmailAuthLocalization localization;
 
   /// {@macro supa_email_auth}
   const SupaEmailAuth({
-    Key? key,
+    super.key,
     this.redirectTo,
+    this.resetPasswordRedirectTo,
     required this.onSignInComplete,
     required this.onSignUpComplete,
     this.onPasswordResetEmailSent,
     this.onError,
+    this.onToggleSignIn,
+    this.onToggleRecoverPassword,
     this.metadataFields,
-  }) : super(key: key);
+    this.extraMetadata,
+    this.localization = const SupaEmailAuthLocalization(),
+  });
 
   @override
   State<SupaEmailAuth> createState() => _SupaEmailAuthState();
@@ -116,8 +142,9 @@ class _SupaEmailAuthState extends State<SupaEmailAuth> {
   bool isVerifying = false;
 
   /// The user has pressed forgot password button
-  bool _forgotPassword = false;
+  bool _isRecoveringPassword = false;
 
+  /// Whether the user is signing in or signing up
   bool _isSigningIn = true;
 
   var maskFormatter = new MaskTextInputFormatter(
@@ -125,6 +152,9 @@ class _SupaEmailAuthState extends State<SupaEmailAuth> {
     filter: { "#": RegExp(r'[0-9]') },
     type: MaskAutoCompletionType.eager
   );
+
+  /// Focus node for email field
+  final FocusNode _emailFocusNode = FocusNode();
 
   @override
   void initState() {

@@ -1,11 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:convert';
+import 'dart:io';
 
+import 'package:crypto/crypto.dart';
+import 'package:flutter/foundation.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:supabase_auth_ui/src/localizations/supa_socials_auth_localization.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:supabase_auth_ui/src/localizations/supa_socials_auth_localization.dart';
@@ -14,44 +21,45 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 extension on OAuthProvider {
   IconData get iconData => switch (this) {
-    OAuthProvider.apple => FontAwesomeIcons.apple,
-    OAuthProvider.azure => FontAwesomeIcons.microsoft,
-    OAuthProvider.bitbucket => FontAwesomeIcons.bitbucket,
-    OAuthProvider.discord => FontAwesomeIcons.discord,
-    OAuthProvider.facebook => FontAwesomeIcons.facebook,
-    OAuthProvider.figma => FontAwesomeIcons.figma,
-    OAuthProvider.github => FontAwesomeIcons.github,
-    OAuthProvider.gitlab => FontAwesomeIcons.gitlab,
-    OAuthProvider.google => FontAwesomeIcons.google,
-    OAuthProvider.linkedin => FontAwesomeIcons.linkedin,
-    OAuthProvider.slack => FontAwesomeIcons.slack,
-    OAuthProvider.spotify => FontAwesomeIcons.spotify,
-    OAuthProvider.twitch => FontAwesomeIcons.twitch,
-    OAuthProvider.twitter => FontAwesomeIcons.xTwitter,
-    _ => Icons.close,
-  };
+        OAuthProvider.apple => FontAwesomeIcons.apple,
+        OAuthProvider.azure => FontAwesomeIcons.microsoft,
+        OAuthProvider.bitbucket => FontAwesomeIcons.bitbucket,
+        OAuthProvider.discord => FontAwesomeIcons.discord,
+        OAuthProvider.facebook => FontAwesomeIcons.facebook,
+        OAuthProvider.figma => FontAwesomeIcons.figma,
+        OAuthProvider.github => FontAwesomeIcons.github,
+        OAuthProvider.gitlab => FontAwesomeIcons.gitlab,
+        OAuthProvider.google => FontAwesomeIcons.google,
+        OAuthProvider.linkedin => FontAwesomeIcons.linkedin,
+        OAuthProvider.slack => FontAwesomeIcons.slack,
+        OAuthProvider.spotify => FontAwesomeIcons.spotify,
+        OAuthProvider.twitch => FontAwesomeIcons.twitch,
+        OAuthProvider.twitter => FontAwesomeIcons.xTwitter,
+        _ => Icons.close,
+      };
 
   Color get btnBgColor => switch (this) {
-    OAuthProvider.apple => Colors.black,
-    OAuthProvider.azure => Colors.blueAccent,
-    OAuthProvider.bitbucket => Colors.blue,
-    OAuthProvider.discord => Colors.purple,
-    OAuthProvider.facebook => const Color(0xFF3b5998),
-    OAuthProvider.figma => const Color.fromRGBO(241, 77, 27, 1),
-    OAuthProvider.github => Colors.black,
-    OAuthProvider.gitlab => Colors.deepOrange,
-    OAuthProvider.google => Colors.white,
-    OAuthProvider.kakao => const Color(0xFFFFE812),
-    OAuthProvider.keycloak => const Color.fromRGBO(0, 138, 170, 1),
-    OAuthProvider.linkedin => const Color.fromRGBO(0, 136, 209, 1),
-    OAuthProvider.notion => const Color.fromRGBO(69, 75, 78, 1),
-    OAuthProvider.slack => const Color.fromRGBO(74, 21, 75, 1),
-    OAuthProvider.spotify => Colors.green,
-    OAuthProvider.twitch => Colors.purpleAccent,
-    OAuthProvider.twitter => Colors.black,
-    OAuthProvider.workos => const Color.fromRGBO(99, 99, 241, 1),
-    _ => Colors.black,
-  };
+        OAuthProvider.apple => Colors.black,
+        OAuthProvider.azure => Colors.blueAccent,
+        OAuthProvider.bitbucket => Colors.blue,
+        OAuthProvider.discord => Colors.purple,
+        OAuthProvider.facebook => const Color(0xFF3b5998),
+        OAuthProvider.figma => const Color.fromRGBO(241, 77, 27, 1),
+        OAuthProvider.github => Colors.black,
+        OAuthProvider.gitlab => Colors.deepOrange,
+        OAuthProvider.google => Colors.white,
+        OAuthProvider.kakao => const Color(0xFFFFE812),
+        OAuthProvider.keycloak => const Color.fromRGBO(0, 138, 170, 1),
+        OAuthProvider.linkedin => const Color.fromRGBO(0, 136, 209, 1),
+        OAuthProvider.notion => const Color.fromRGBO(69, 75, 78, 1),
+        OAuthProvider.slack => const Color.fromRGBO(74, 21, 75, 1),
+        OAuthProvider.spotify => Colors.green,
+        OAuthProvider.twitch => Colors.purpleAccent,
+        OAuthProvider.twitter => Colors.black,
+        OAuthProvider.workos => const Color.fromRGBO(99, 99, 241, 1),
+        // ignore: unreachable_switch_case
+        _ => Colors.black,
+      };
 
   String get labelText =>
       'Continue with ${name[0].toUpperCase()}${name.substring(1)}';
