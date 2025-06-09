@@ -200,17 +200,30 @@ class _SupaSocialsAuthState extends State<SupaSocialsAuth> {
       nonce: hashedNonce,
     );
 
+
     final idToken = credential.identityToken;
     if (idToken == null) {
       throw const AuthException(
           'Could not find ID Token from generated Apple sign in credential.');
     }
 
-    return supabase.auth.signInWithIdToken(
+    final res = await supabase.auth.signInWithIdToken(
       provider: OAuthProvider.apple,
       idToken: idToken,
       nonce: rawNonce,
     );
+
+    if (supabase.auth.currentUser!=null && credential.givenName!=null && credential.familyName!=null){
+      await supabase
+        .from("profiles")
+        .update({
+          "first_name": credential.givenName,
+          "last_name": credential.familyName
+        })
+        .eq("id", supabase.auth.currentUser!.id);
+    }
+
+    return res;
   }
 
   @override
