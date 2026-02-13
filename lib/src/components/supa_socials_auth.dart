@@ -1,18 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:convert';
-import 'dart:io';
 
-import 'package:crypto/crypto.dart';
-import 'package:flutter/foundation.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:supabase_auth_ui/src/localizations/supa_socials_auth_localization.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:supabase_auth_ui/src/localizations/supa_socials_auth_localization.dart';
@@ -200,7 +193,6 @@ class _SupaSocialsAuthState extends State<SupaSocialsAuth> {
       nonce: hashedNonce,
     );
 
-
     final idToken = credential.identityToken;
     if (idToken == null) {
       throw const AuthException(
@@ -213,14 +205,16 @@ class _SupaSocialsAuthState extends State<SupaSocialsAuth> {
       nonce: rawNonce,
     );
 
-    if (supabase.auth.currentUser!=null && credential.givenName!=null && credential.familyName!=null){
-      await supabase
-        .from("profiles")
-        .update({
-          "first_name": credential.givenName,
-          "last_name": credential.familyName
-        })
-        .eq("id", supabase.auth.currentUser!.id);
+    // Apple only provides name information on the FIRST authentication
+    // Use upsert to handle both new user (insert) and existing user (update) cases
+    if (res.user != null &&
+        credential.givenName != null &&
+        credential.familyName != null) {
+      await supabase.from("profiles").upsert({
+        "id": res.user!.id,
+        "first_name": credential.givenName,
+        "last_name": credential.familyName
+      });
     }
 
     return res;
